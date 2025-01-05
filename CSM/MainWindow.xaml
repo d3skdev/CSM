@@ -7,30 +7,11 @@
         xmlns:flags="clr-namespace:FamFamFam.Flags.Wpf;assembly=FamFamFam.Flags.Wpf"
         mc:Ignorable="d"
         Title="MainWindow" Height="225" Width="359" WindowStyle="None" Loaded="Window_Loaded" Closed="Window_Closed" MouseLeftButtonDown="Window_MouseLeftButtonDown"
-        ResizeMode="NoResize" Background="#FF380964" Topmost="false">
+        ResizeMode="NoResize" Background="Black" AllowsTransparency="True">
     <WindowChrome.WindowChrome>
         <WindowChrome GlassFrameThickness="0" CornerRadius="8" CaptionHeight="0" />
     </WindowChrome.WindowChrome>
-    <Window.Style>
-        <Style TargetType="Window">
-            <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Window">
-                        <Border CornerRadius="14">
-                            <Border.Background>
-                                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                                    <GradientStop Color="Black"/>
-                                    <GradientStop Color="#FF070713" Offset="0.592"/>
-                                </LinearGradientBrush>
-                            </Border.Background>
-                            <ContentPresenter />
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-    </Window.Style>
+
 
     <Window.Resources>
         <!-- An instance of the converter being used -->
@@ -39,8 +20,8 @@
 
     <Window.ContextMenu>
         <ContextMenu>
-            <MenuItem x:Name="cm_overlay" Header="Overlay" IsCheckable="True" Click="cm_overlay_Click" />
-            <MenuItem x:Name="cm_always_on_top" Header="Always on top" IsCheckable="True" Click="cm_always_on_top_Click"/>
+            <MenuItem x:Name="cm_overlay" Header="Overlay" IsCheckable="True" IsChecked="{Binding isOverlayActive}" Click="cm_overlay_Click" />
+            <MenuItem x:Name="cm_always_on_top" Header="Always on top" IsCheckable="True" IsChecked="{Binding Topmost}" Click="cm_always_on_top_Click"/>
             <Separator/>
             <MenuItem x:Name="cm_exit" Header="Exit" Click="cm_exit_Click"/>
         </ContextMenu>
@@ -48,7 +29,7 @@
 
     <Grid Margin="0,0,800,434">
         <Grid Margin="14,74,-352,-158">
-            <ListBox x:Name="CustomListBox" HorizontalContentAlignment="Stretch" Background="{x:Null}" BorderBrush="{x:Null}" d:ItemsSource="{d:SampleData ItemCount=5}" HorizontalAlignment="Center" Width="338">
+            <ListBox x:Name="CustomListBox" HorizontalContentAlignment="Stretch" Background="{x:Null}" BorderBrush="{x:Null}" HorizontalAlignment="Center" Width="338" d:ItemsSource="{d:SampleData ItemCount=5}">
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="ListBoxItem">
                         <Setter Property="Focusable" Value="False"/>
@@ -79,7 +60,7 @@
         </Grid>
 
         <StackPanel Orientation="Horizontal" Margin="0,0,-359,-70" HorizontalAlignment="Center">
-            <Label Content="COD Server Monitor" Foreground="White"  FontSize="28" BorderBrush="#FF430D0D" IsEnabled="False" FontFamily="Bahnschrift SemiBold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <Label x:Name="lbl_header" Content="COD Server Monitor" Foreground="White"  FontSize="28" BorderBrush="#FF430D0D" IsEnabled="False" FontFamily="Bahnschrift SemiBold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center">
             </Label>
         </StackPanel>
         <Grid Margin="6,0,-345,-210" Height="24" VerticalAlignment="Bottom">

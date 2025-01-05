@@ -12,6 +12,7 @@ namespace CSM
         private PCAP? pcap;
         private CodProcess codProcess;
         private int codProcessID;
+        private bool isOverlayActive;
         public MainWindow()
         {
             InitializeComponent();
@@ -129,6 +130,28 @@ namespace CSM
 
         private void cm_overlay_Click(object sender, RoutedEventArgs e)
         {
+            isOverlayActive = !isOverlayActive;
+
+            if (isOverlayActive)
+            {
+                this.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#01FFFFFF"));
+                lbl_header.Visibility = Visibility.Hidden;
+                cb_deviceComboBox.Visibility = Visibility.Hidden;
+                lbl_connection_state.Visibility = Visibility.Hidden;
+                cm_always_on_top.IsEnabled = false;
+                this.Topmost = true;
+
+
+            }
+            else
+            {
+                this.Background = new SolidColorBrush(Colors.Black);
+                lbl_header.Visibility = Visibility.Visible;
+                cb_deviceComboBox.Visibility = Visibility.Visible;
+                lbl_connection_state.Visibility = Visibility.Visible;
+                cm_always_on_top.IsEnabled = true;
+                this.Topmost = false;
+            }
 
         }
 
