@@ -124,8 +124,22 @@ namespace CSM
 
         private void cb_deviceComboBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine("Selection changed");
+            if (pcap != null)
+            {
+                pcap.StopMonitoring();
+                pcap = null;
+            }
 
+            if (codProcessID != 0 && cb_deviceComboBox.SelectedItem != null)
+            {
+                var selectedDevice = ((dynamic)cb_deviceComboBox.SelectedItem).Device as ILiveDevice;
+                if (selectedDevice != null)
+                {
+                    pcap = new PCAP(selectedDevice, codProcessID.ToString());
+                    pcap.StartMonitoring();
+                    pcap.ConnectionUpdateEvent += onConnectionUpdate;
+                }
+            }
         }
 
         private void cm_overlay_Click(object sender, RoutedEventArgs e)
