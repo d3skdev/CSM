@@ -26,6 +26,18 @@
             GlassFrameThickness="0" />
     </WindowChrome.WindowChrome>
 
+    <Window.Style>
+        <Style TargetType="Window">
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="BorderBrush" Value="#FF5B5B5B" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Style>
+
 
     <Window.Resources>
         <!--  An instance of the converter being used  -->
