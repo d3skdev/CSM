@@ -17,7 +17,6 @@ public class GeoLiteDatabase
         {
             Assembly assembly = Assembly.GetExecutingAssembly();
             
-            // Initialize all three readers
             _countryReader = InitializeReader("CSM.GeoLite2-Country.mmdb");
             _cityReader = InitializeReader("CSM.GeoLite2-City.mmdb");
             _asnReader = InitializeReader("CSM.GeoLite2-ASN.mmdb");
@@ -62,7 +61,6 @@ public class GeoLiteDatabase
         }
     }
 
-    // Example method for getting city information
     public static string? GetCityName(string ipAddress)
     {
         if (_cityReader == null)
@@ -86,7 +84,6 @@ public class GeoLiteDatabase
         }
     }
 
-    // Example method for getting ASN information
     public static string? GetAsnInfo(string ipAddress)
     {
         if (_asnReader == null)
@@ -111,7 +108,6 @@ public class GeoLiteDatabase
         }
     }
 
-    // Method for getting country information
     public static string GetCountryName(string ipAddress, bool isIso = false)
     {
         if (_countryReader == null)
@@ -141,7 +137,6 @@ public class GeoLiteDatabase
         }
     }
 
-    // Updated Close method to handle all readers
     public static void Close()
     {
         _countryReader?.Dispose();

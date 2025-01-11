@@ -27,7 +27,6 @@ namespace CSM
         private CodProcess codProcess;
         private int codProcessID;
         public bool IsOverlayActive = false;
-
         private ConnectionOverview _connectionOverview;
         public ConnectionOverview connectionOverview { get { return _connectionOverview; } set { _connectionOverview = value; OnPropertyChanged(); } }
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -35,7 +34,6 @@ namespace CSM
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-
 
         private void onCodProcessExist(object? sender, int processID)
         {
@@ -66,7 +64,6 @@ namespace CSM
             }
         }
 
-
         private void updateItemList(ConnectionOverview[] connectionsOverviewList)
         {
             if (connectionsOverviewList.Length > 0)
@@ -81,9 +78,6 @@ namespace CSM
                 grid_content.Visibility = Visibility.Collapsed;
             }
         }
-
-
-
 
         private void onConnectionUpdate(object? sender, ConnectionOverview[] connectionList)
         {

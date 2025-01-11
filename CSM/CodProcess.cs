@@ -8,7 +8,6 @@ namespace CSM
         public event EventHandler<int>? ProcessExistEvent;
         private DispatcherTimer processCheckTimer;
 
-
         public CodProcess(int checkEverySeconds = 5)
         {
             processCheckTimer = new DispatcherTimer();

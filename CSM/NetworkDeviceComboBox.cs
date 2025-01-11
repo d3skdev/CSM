@@ -11,14 +11,12 @@ namespace CSM
 
         public NetworkDeviceComboBox()
         {
-            // Subscribe to the SelectionChanged event
             this.SelectionChanged += NetworkDeviceComboBox_SelectionChanged;
             LoadNetworkDevices();
         }
 
         private void NetworkDeviceComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            // Raise a custom event or perform actions when the selection changes
             if (this.SelectedItem != null)
             {
                 var selected = this.SelectedItem;
@@ -27,7 +25,6 @@ namespace CSM
             OnSelectionChanged();
         }
 
-        // Custom event or method to handle selection change
         public event SelectionChangedEventHandler CustomSelectionChanged;
 
         protected virtual void OnSelectionChanged()

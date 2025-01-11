@@ -40,7 +40,6 @@
 
 
     <Window.Resources>
-        <!--  An instance of the converter being used  -->
         <flags:CountryIdToFlagImageSourceConverter x:Key="CountryIdToFlagImageSourceConverter" />
 
         <!--  Reusable Style for Collapsing Empty Content  -->
