@@ -15,6 +15,7 @@
     Loaded="Window_Loaded"
     MouseLeftButtonDown="Window_MouseLeftButtonDown"
     ResizeMode="NoResize"
+    Topmost="{Binding ElementName=cm_always_on_top, Path=IsChecked, Mode=TwoWay}"
     WindowStyle="None"
     mc:Ignorable="d">
 
@@ -38,13 +39,12 @@
                 Click="cm_overlay_Click"
                 Header="Overlay"
                 IsCheckable="True"
-                IsChecked="{Binding IsOverlayActive}" />
+                IsChecked="{Binding Path=IsOverlayActive}" />
             <MenuItem
                 x:Name="cm_always_on_top"
-                Click="cm_always_on_top_Click"
                 Header="Always on top"
                 IsCheckable="True"
-                IsChecked="{Binding Topmost}" />
+                IsChecked="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Topmost, Mode=TwoWay}" />
             <Separator />
             <MenuItem
                 x:Name="cm_exit"
@@ -56,11 +56,8 @@
 
     <Grid Margin="8">
         <Grid.RowDefinitions>
-            <!--  Title row - Auto height based on content  -->
             <RowDefinition Height="Auto" />
-            <!--  Content row - Takes remaining space  -->
             <RowDefinition Height="*" />
-            <!--  Bottom row - Auto height based on content  -->
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
@@ -93,15 +90,15 @@
             Grid.Row="1"
             Margin="0,8">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
             <!--  Left Column  -->
             <Grid
                 Grid.Column="0"
-                Margin="0,0,12,0"
-                HorizontalAlignment="Right"
+                Margin="26,0,12,0"
+                HorizontalAlignment="Left"
                 VerticalAlignment="Center">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -115,7 +112,7 @@
                     Height="40"
                     Margin="0,12,0,0"
                     VerticalAlignment="Bottom"
-                    Source="{Binding Path=CountryIso, Converter={StaticResource CountryIdToFlagImageSourceConverter}}"
+                    Source="{Binding Path=connectionOverview.CountryIso, Converter={StaticResource CountryIdToFlagImageSourceConverter}}"
                     Stretch="Fill" />
 
                 <!--  Traffic Label  -->
@@ -123,47 +120,47 @@
                     Grid.Row="1"
                     MinWidth="55"
                     HorizontalAlignment="Center"
-                    Content="{Binding Path=Traffic, Mode=TwoWay, FallbackValue='0/KB'}"
+                    Content="{Binding Path=connectionOverview.Traffic, FallbackValue='0/KB'}"
                     FontSize="12"
                     FontWeight="Normal"
                     Foreground="#FFCCCCCC" />
             </Grid>
 
             <!--  Right Column  -->
-            <Grid Grid.Column="1" VerticalAlignment="Center">
+            <Grid
+                Grid.Column="1"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <!--  First Label  -->
+                <!--  Country Label  -->
                 <Label
-                    x:Name="lbl_country"
                     Grid.Row="0"
                     Width="Auto"
                     MaxHeight="28"
-                    Content="{Binding Country, FallbackValue='Country'}"
+                    Content="{Binding Path=connectionOverview.Country, FallbackValue='Country'}"
                     FontSize="14"
                     FontWeight="Bold"
                     Foreground="#FFCCCCCC" />
 
-                <!--  Second Label  -->
+                <!--  City Label  -->
                 <Label
-                    x:Name="lbl_city"
                     Grid.Row="1"
                     Width="Auto"
                     MaxHeight="25"
-                    Content="{Binding Path=City, FallbackValue='City'}"
+                    Content="{Binding Path=connectionOverview.City, FallbackValue='City'}"
                     Foreground="#FFCCCCCC" />
 
-                <!--  Third Label  -->
+                <!--  ASN Label  -->
                 <Label
-                    x:Name="lbl_asn"
                     Grid.Row="2"
                     Width="Auto"
-                    MaxHeight="30"
-                    Content="{Binding Path=ASN, FallbackValue='ASN'}"
+                    MaxHeight="25"
+                    Content="{Binding Path=connectionOverview.ASN, FallbackValue='ASN'}"
                     Foreground="#FFCCCCCC" />
             </Grid>
         </Grid>

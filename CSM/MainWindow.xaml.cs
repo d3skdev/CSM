@@ -1,6 +1,7 @@
 ﻿using Microsoft.Diagnostics.Tracing.Session;
 using SharpPcap;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
@@ -16,6 +17,7 @@ namespace CSM
         {
             DataContext = this;
             InitializeComponent();
+            grid_content.Visibility = Visibility.Collapsed;
             codProcess = new CodProcess();
             codProcess.ProcessExistEvent += onCodProcessExist;
             codProcess.Start();
@@ -24,31 +26,11 @@ namespace CSM
         private PCAP? pcap;
         private CodProcess codProcess;
         private int codProcessID;
+        public bool IsOverlayActive = false;
 
+        private ConnectionOverview _connectionOverview;
+        public ConnectionOverview connectionOverview { get { return _connectionOverview; } set { _connectionOverview = value; OnPropertyChanged(); } }
         public event PropertyChangedEventHandler? PropertyChanged;
-
-        private bool _isOverlayActive;
-        public bool IsOverlayActive { get { return _isOverlayActive; } set { _isOverlayActive = value; OnPropertyChanged(); } }
-
-
-
-        private string _country;
-        public string Country { get { return _country; } set { _country = value; OnPropertyChanged(); } }
-
-        private string _countryIso;
-        public string CountryIso { get { return _countryIso; } set { _countryIso = value; OnPropertyChanged(); } }
-
-
-        private string _city;
-        public string City { get { return _city; } set { _city = value; OnPropertyChanged(); } }
-
-        private string _asn;
-        public string ASN { get { return _asn; } set { _asn = value; OnPropertyChanged(); } }
-
-        private string _traffic;
-        public string Traffic { get { return _traffic; } set { _traffic = value; OnPropertyChanged(); } }
-
-
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -85,17 +67,13 @@ namespace CSM
         }
 
 
-        private void updateItemList(ConnectionOverview[] connectionList)
+        private void updateItemList(ConnectionOverview[] connectionsOverviewList)
         {
-            if (connectionList.Length > 0)
+            if (connectionsOverviewList.Length > 0)
             {
                 grid_content.Visibility = Visibility.Visible;
                 grid_no_content.Visibility = Visibility.Collapsed;
-                Country = connectionList.Last().Country;
-                City = connectionList.Last().City;
-                ASN = connectionList.Last().ASN;
-                Traffic = connectionList.Last().Traffic;
-                CountryIso = connectionList.Last().CountryIso;
+                connectionOverview = connectionsOverviewList.Last();
             }
             else
             {
@@ -184,6 +162,7 @@ namespace CSM
         {
             IsOverlayActive = !IsOverlayActive;
 
+
             if (IsOverlayActive)
             {
                 this.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#01FFFFFF"));
@@ -205,12 +184,7 @@ namespace CSM
                 this.Topmost = false;
             }
 
-        }
 
-
-        private void cm_always_on_top_Click(object sender, RoutedEventArgs e)
-        {
-            this.Topmost = !this.Topmost;
         }
 
         private void cm_exit_Click(object sender, RoutedEventArgs e)
