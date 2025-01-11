@@ -63,7 +63,7 @@ public class GeoLiteDatabase
     }
 
     // Example method for getting city information
-    public static string GetCityName(string ipAddress)
+    public static string? GetCityName(string ipAddress)
     {
         if (_cityReader == null)
             return null;
@@ -73,7 +73,7 @@ public class GeoLiteDatabase
             try
             {
                 var response = _cityReader.City(ipAddress);
-                return response.City.Name ?? "N/A";
+                return string.IsNullOrEmpty(response.City.Name) ? null : response.City.Name;
             }
             catch (AddressNotFoundException)
             {
@@ -87,7 +87,7 @@ public class GeoLiteDatabase
     }
 
     // Example method for getting ASN information
-    public static string GetAsnInfo(string ipAddress)
+    public static string? GetAsnInfo(string ipAddress)
     {
         if (_asnReader == null)
             return null;
@@ -97,7 +97,8 @@ public class GeoLiteDatabase
             try
             {
                 var response = _asnReader.Asn(ipAddress);
-                return response.AutonomousSystemOrganization ?? "N/A";
+                return string.IsNullOrEmpty(response.AutonomousSystemOrganization) ? null : response.AutonomousSystemOrganization;
+
             }
             catch (AddressNotFoundException)
             {

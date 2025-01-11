@@ -8,7 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="MainWindow"
     Width="279"
-    Height="163"
+    Height="196"
     AllowsTransparency="True"
     Background="Black"
     Closed="Window_Closed"
@@ -22,7 +22,7 @@
     <WindowChrome.WindowChrome>
         <WindowChrome
             CaptionHeight="0"
-            CornerRadius="8"
+            CornerRadius="12"
             GlassFrameThickness="0" />
     </WindowChrome.WindowChrome>
 
@@ -42,6 +42,19 @@
     <Window.Resources>
         <!--  An instance of the converter being used  -->
         <flags:CountryIdToFlagImageSourceConverter x:Key="CountryIdToFlagImageSourceConverter" />
+
+        <!--  Reusable Style for Collapsing Empty Content  -->
+        <Style x:Key="CollapseIfEmptyStyle" TargetType="Label">
+            <Setter Property="Visibility" Value="Visible" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Content, RelativeSource={RelativeSource Self}}" Value="{x:Null}">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Content, RelativeSource={RelativeSource Self}}" Value="">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
 
     <Window.ContextMenu>
@@ -73,21 +86,22 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Label
-            x:Name="lbl_header"
-            Width="263"
-            HorizontalAlignment="Center"
-            HorizontalContentAlignment="Center"
-            BorderBrush="#FF430D0D"
-            Content="COD Server Monitor"
-            FontFamily="Bahnschrift SemiBold"
-            FontSize="24"
-            Foreground="White"
-            IsEnabled="False" />
+        <Grid x:Name="grid_top">
+            <Label
+                x:Name="lbl_header"
+                Width="263"
+                HorizontalAlignment="Center"
+                HorizontalContentAlignment="Center"
+                BorderBrush="#FF430D0D"
+                Content="COD Server Monitor"
+                FontFamily="Bahnschrift SemiBold"
+                FontSize="24"
+                Foreground="White"
+                IsEnabled="False" />
+        </Grid>
 
         <Grid x:Name="grid_no_content" Grid.Row="1">
             <TextBlock
-                Margin="0,0,0,14"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 FontStyle="Italic"
@@ -120,9 +134,8 @@
                 <!--  Flag Image  -->
                 <Image
                     Grid.Row="0"
-                    Width="60"
-                    Height="40"
-                    Margin="0,12,0,0"
+                    Width="50"
+                    Height="30"
                     VerticalAlignment="Bottom"
                     Source="{Binding Path=connectionOverview.CountryIso, Converter={StaticResource CountryIdToFlagImageSourceConverter}}"
                     Stretch="Fill" />
@@ -131,7 +144,7 @@
                 <Label
                     Grid.Row="1"
                     MinWidth="55"
-                    HorizontalAlignment="Center"
+                    HorizontalContentAlignment="Center"
                     Content="{Binding Path=connectionOverview.Traffic, FallbackValue='0/KB'}"
                     FontSize="12"
                     FontWeight="Normal"
@@ -147,13 +160,14 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
                 <!--  Country Label  -->
                 <Label
                     Grid.Row="0"
                     Width="Auto"
-                    MaxHeight="28"
+                    MaxHeight="25"
                     Content="{Binding Path=connectionOverview.Country, FallbackValue='Country'}"
                     FontSize="14"
                     FontWeight="Bold"
@@ -161,24 +175,38 @@
 
                 <!--  City Label  -->
                 <Label
+                    x:Name="lbl_city"
                     Grid.Row="1"
                     Width="Auto"
                     MaxHeight="25"
                     Content="{Binding Path=connectionOverview.City, FallbackValue='City'}"
-                    Foreground="#FFCCCCCC" />
+                    Foreground="#FFCCCCCC"
+                    Style="{StaticResource CollapseIfEmptyStyle}" />
 
-                <!--  ASN Label  -->
+                <!--  IP Label  -->
                 <Label
+                    x:Name="lbl_IP"
                     Grid.Row="2"
                     Width="Auto"
                     MaxHeight="25"
+                    Content="{Binding Path=connectionOverview.RemoteIp, FallbackValue='IP'}"
+                    Foreground="#FFCCCCCC"
+                    Style="{StaticResource CollapseIfEmptyStyle}" />
+
+                <!--  ASN Label  -->
+                <Label
+                    x:Name="lbl_asn"
+                    Grid.Row="3"
+                    Width="Auto"
+                    MaxHeight="25"
                     Content="{Binding Path=connectionOverview.ASN, FallbackValue='ASN'}"
-                    Foreground="#FFCCCCCC" />
+                    Foreground="#FFCCCCCC"
+                    Style="{StaticResource CollapseIfEmptyStyle}" />
             </Grid>
         </Grid>
 
         <!--  Bottom row  -->
-        <Grid Grid.Row="2">
+        <Grid x:Name="grid_bottom" Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />

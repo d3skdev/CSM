@@ -162,13 +162,15 @@ namespace CSM
         {
             IsOverlayActive = !IsOverlayActive;
 
-
             if (IsOverlayActive)
             {
+                this.Height = 100;
                 this.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#01FFFFFF"));
-                lbl_header.Visibility = Visibility.Hidden;
-                cb_deviceComboBox.Visibility = Visibility.Hidden;
-                lbl_connection_state.Visibility = Visibility.Hidden;
+                grid_top.Visibility = Visibility.Collapsed;
+                grid_bottom.Visibility = Visibility.Collapsed;
+                lbl_city.Visibility = Visibility.Collapsed;
+                lbl_IP.Visibility = Visibility.Collapsed;
+                lbl_asn.Visibility = Visibility.Collapsed;
                 cm_always_on_top.IsEnabled = false;
                 this.Topmost = true;
 
@@ -176,15 +178,16 @@ namespace CSM
             }
             else
             {
+                this.Height = 196;
                 this.Background = new SolidColorBrush(Colors.Black);
-                lbl_header.Visibility = Visibility.Visible;
-                cb_deviceComboBox.Visibility = Visibility.Visible;
-                lbl_connection_state.Visibility = Visibility.Visible;
+                grid_top.Visibility = Visibility.Visible;
+                grid_bottom.Visibility = Visibility.Visible;
+                lbl_city.Visibility = Visibility.Visible;
+                lbl_IP.Visibility = Visibility.Visible;
+                lbl_asn.Visibility = Visibility.Visible;
                 cm_always_on_top.IsEnabled = true;
                 this.Topmost = false;
             }
-
-
         }
 
         private void cm_exit_Click(object sender, RoutedEventArgs e)
