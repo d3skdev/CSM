@@ -47,22 +47,25 @@ namespace CSM
                     return;
                 }
 
-                // Get all network interfaces
+                // Get all network interfaces that are up, have IPv4 addresses and a default gateway
                 var networkInterfaces = NetworkInterface.GetAllNetworkInterfaces()
                     .Where(ni => ni.OperationalStatus == OperationalStatus.Up &&
                                 ni.NetworkInterfaceType != NetworkInterfaceType.Loopback &&
-                                ni.NetworkInterfaceType != NetworkInterfaceType.Tunnel)
+                                ni.NetworkInterfaceType != NetworkInterfaceType.Tunnel &&
+                                ni.GetIPProperties().UnicastAddresses
+                                    .Any(addr => addr.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork) &&
+                                ni.GetIPProperties().GatewayAddresses
+                                    .Any(gateway => gateway.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork))
                     .ToList();
 
                 var deviceList = devices.Select(d => new
                 {
                     Device = d,
-                    Description = $"{d.Description} ({d.Name})",
-                    // Try to find matching network interface
+                    Description = $"{d.Description}",
                     NetworkInterface = networkInterfaces.FirstOrDefault(ni =>
                         d.Name.Contains(ni.Id) || ni.Description.Contains(d.Description))
                 })
-                .Where(d => d.Device != null)
+                .Where(d => d.Device != null && d.NetworkInterface != null)
                 .ToList();
 
                 this.ItemsSource = deviceList;
@@ -71,10 +74,8 @@ namespace CSM
 
                 // Auto-select the best interface
                 var bestDevice = deviceList
-                    .OrderByDescending(d => d.NetworkInterface?.Speed ?? 0) // Prefer faster connections
-                    .FirstOrDefault(d => d.NetworkInterface != null &&
-                                       d.NetworkInterface.GetIPProperties().UnicastAddresses
-                                           .Any(addr => addr.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork));
+                    .OrderByDescending(d => d.NetworkInterface.Speed) // Prefer faster connections
+                    .FirstOrDefault();
 
                 if (bestDevice != null)
                 {
