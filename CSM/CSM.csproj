@@ -9,10 +9,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="GeoLite2-ASN.mmdb" />
+    <None Remove="GeoLite2-City.mmdb" />
     <None Remove="GeoLite2-Country.mmdb" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="GeoLite2-ASN.mmdb" />
+    <EmbeddedResource Include="GeoLite2-City.mmdb" />
     <EmbeddedResource Include="GeoLite2-Country.mmdb" />
   </ItemGroup>
 
@@ -21,6 +25,21 @@
     <PackageReference Include="MaxMind.GeoIP2" Version="5.2.0" />
     <PackageReference Include="Microsoft.Diagnostics.Tracing.TraceEvent" Version="3.1.18" />
     <PackageReference Include="SharpPcap" Version="6.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

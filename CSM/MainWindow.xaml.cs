@@ -1,5 +1,7 @@
 ﻿using Microsoft.Diagnostics.Tracing.Session;
 using SharpPcap;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -7,19 +9,51 @@ using System.Windows.Media;
 
 namespace CSM
 {
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        private PCAP? pcap;
-        private CodProcess codProcess;
-        private int codProcessID;
-        private bool isOverlayActive;
+
         public MainWindow()
         {
+            DataContext = this;
             InitializeComponent();
             codProcess = new CodProcess();
             codProcess.ProcessExistEvent += onCodProcessExist;
             codProcess.Start();
         }
+
+        private PCAP? pcap;
+        private CodProcess codProcess;
+        private int codProcessID;
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        private bool _isOverlayActive;
+        public bool IsOverlayActive { get { return _isOverlayActive; } set { _isOverlayActive = value; OnPropertyChanged(); } }
+
+
+
+        private string _country;
+        public string Country { get { return _country; } set { _country = value; OnPropertyChanged(); } }
+
+        private string _countryIso;
+        public string CountryIso { get { return _countryIso; } set { _countryIso = value; OnPropertyChanged(); } }
+
+
+        private string _city;
+        public string City { get { return _city; } set { _city = value; OnPropertyChanged(); } }
+
+        private string _asn;
+        public string ASN { get { return _asn; } set { _asn = value; OnPropertyChanged(); } }
+
+        private string _traffic;
+        public string Traffic { get { return _traffic; } set { _traffic = value; OnPropertyChanged(); } }
+
+
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
 
         private void onCodProcessExist(object? sender, int processID)
         {
@@ -51,25 +85,29 @@ namespace CSM
         }
 
 
-        private void updateItemList(ConnectionListView[] connectionList)
+        private void updateItemList(ConnectionOverview[] connectionList)
         {
-            var items = new List<ConnectionListView>();
-
-            foreach (var c in connectionList)
+            if (connectionList.Length > 0)
             {
-                items.Add(new ConnectionListView
-                {
-                    Country = $"{c.Country}",
-                    Traffic = $"{c.RemoteIp} ({c.Traffic})",
-                    CountryIso = c.CountryIso
-                });
-
+                grid_content.Visibility = Visibility.Visible;
+                grid_no_content.Visibility = Visibility.Collapsed;
+                Country = connectionList.Last().Country;
+                City = connectionList.Last().City;
+                ASN = connectionList.Last().ASN;
+                Traffic = connectionList.Last().Traffic;
+                CountryIso = connectionList.Last().CountryIso;
             }
-
-            CustomListBox.ItemsSource = items;
+            else
+            {
+                grid_no_content.Visibility = Visibility.Visible;
+                grid_content.Visibility = Visibility.Collapsed;
+            }
         }
 
-        private void onConnectionUpdate(object? sender, ConnectionListView[] connectionList)
+
+
+
+        private void onConnectionUpdate(object? sender, ConnectionOverview[] connectionList)
         {
             this.updateItemList(connectionList);
         }
@@ -144,9 +182,9 @@ namespace CSM
 
         private void cm_overlay_Click(object sender, RoutedEventArgs e)
         {
-            isOverlayActive = !isOverlayActive;
+            IsOverlayActive = !IsOverlayActive;
 
-            if (isOverlayActive)
+            if (IsOverlayActive)
             {
                 this.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#01FFFFFF"));
                 lbl_header.Visibility = Visibility.Hidden;

@@ -1,11 +1,7 @@
 ﻿using PacketDotNet;
 using SharpPcap;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
 using System.Windows.Threading;
 
 namespace CSM
@@ -17,19 +13,10 @@ namespace CSM
         public DateTime LastActivity { get; set; }
     }
 
-    public class ConnectionListView
-    {
-        public string RemoteIp { get; set; }
-        public string Country { get; set; }
-        public string CountryIso { get; set; }
-        public string Traffic { get; set; }
-        public string LastActivity { get; set; }
-    }
-
     public class PacketCaptureConfig
     {
         public const int UI_REFRESH_INTERVAL = 3000; // 3 seconds
-        public const int CONNECTION_TIMEOUT = 3; // 5 seconds
+        public const int CONNECTION_TIMEOUT = 3; // 3 seconds
         public const int MIN_BYTES_THRESHOLD = 1024; // 1KB minimum to show connection
         public const string DEFAULT_FILTER = "udp dst port 3074";
     }
@@ -37,10 +24,10 @@ namespace CSM
     public class ConnectionManager
     {
         private readonly Dictionary<string, ConnectionStats> _stats = new();
-        private readonly Dictionary<string, ConnectionListView> _listView = new();
+        private readonly Dictionary<string, ConnectionOverview> _ConnectionsOverview = new();
         private readonly Dictionary<string, long> _pendingUpdates = new();
-        
-        public IReadOnlyDictionary<string, ConnectionListView> ListView => _listView;
+
+        public IReadOnlyDictionary<string, ConnectionOverview> ListView => _ConnectionsOverview;
 
         public void UpdateStats(string remoteIp, int dataLength)
         {
@@ -74,26 +61,28 @@ namespace CSM
         {
             if (stats.TotalBytes >= PacketCaptureConfig.MIN_BYTES_THRESHOLD)
             {
-                if (!_listView.ContainsKey(remoteIp))
+                if (!_ConnectionsOverview.ContainsKey(remoteIp))
                 {
-                    _listView[remoteIp] = new ConnectionListView
+                    _ConnectionsOverview[remoteIp] = new ConnectionOverview
                     {
                         RemoteIp = remoteIp,
                         Traffic = ByteFormatter.Format(stats.TotalBytes),
                         Country = GeoLiteDatabase.GetCountryName(remoteIp),
                         CountryIso = GeoLiteDatabase.GetCountryName(remoteIp, true),
+                        City = GeoLiteDatabase.GetCityName(remoteIp),
+                        ASN = GeoLiteDatabase.GetAsnInfo(remoteIp),
                         LastActivity = DateTime.Now.ToString("HH:mm:ss")
                     };
                 }
                 else
                 {
-                    _listView[remoteIp].LastActivity = DateTime.Now.ToString("HH:mm:ss");
-                    _listView[remoteIp].Traffic = ByteFormatter.Format(stats.TotalBytes);
+                    _ConnectionsOverview[remoteIp].LastActivity = DateTime.Now.ToString("HH:mm:ss");
+                    _ConnectionsOverview[remoteIp].Traffic = ByteFormatter.Format(stats.TotalBytes);
                 }
             }
-            else if (_listView.ContainsKey(remoteIp))
+            else if (_ConnectionsOverview.ContainsKey(remoteIp))
             {
-                _listView.Remove(remoteIp);
+                _ConnectionsOverview.Remove(remoteIp);
             }
         }
 
@@ -106,7 +95,7 @@ namespace CSM
 
             foreach (var ip in inactiveIps)
             {
-                _listView.Remove(ip);
+                _ConnectionsOverview.Remove(ip);
                 _stats.Remove(ip);
             }
         }
@@ -114,7 +103,7 @@ namespace CSM
         public void Clear()
         {
             _stats.Clear();
-            _listView.Clear();
+            _ConnectionsOverview.Clear();
             _pendingUpdates.Clear();
         }
     }
@@ -180,7 +169,7 @@ namespace CSM
         private readonly PacketProcessor _packetProcessor;
         private DateTime _lastUiUpdate;
 
-        public event EventHandler<ConnectionListView[]> ConnectionUpdateEvent;
+        public event EventHandler<ConnectionOverview[]> ConnectionUpdateEvent;
 
         public PCAP(ILiveDevice selectedDevice, string processId)
         {
