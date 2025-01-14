@@ -13,6 +13,8 @@
     <DebugSymbols>false</DebugSymbols>
     <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
     <ApplicationIcon>App.ico</ApplicationIcon>
+    <StartupObject></StartupObject>
+    <ApplicationManifest>App.Manifest</ApplicationManifest>
   </PropertyGroup>
 
   <ItemGroup>
