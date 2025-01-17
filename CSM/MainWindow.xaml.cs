@@ -64,7 +64,7 @@ namespace CSM
             }
         }
 
-        private void updateItemList(ConnectionOverview[] connectionsOverviewList)
+        private void updateConnectionView(ConnectionOverview[] connectionsOverviewList)
         {
             if (connectionsOverviewList.Length > 0)
             {
@@ -82,7 +82,7 @@ namespace CSM
 
         private void onConnectionUpdate(object? sender, ConnectionOverview[] connectionList)
         {
-            this.updateItemList(connectionList);
+            this.updateConnectionView(connectionList);
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
