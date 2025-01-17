@@ -71,7 +71,6 @@ namespace CSM
                 grid_content.Visibility = Visibility.Visible;
                 grid_no_content.Visibility = Visibility.Collapsed;
                 connectionOverview = connectionsOverviewList.Last();
-                OnPropertyChanged(nameof(connectionOverview));
             }
             else
             {
